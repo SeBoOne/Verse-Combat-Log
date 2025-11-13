@@ -201,7 +201,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License**.
 
-**VerseCombatLog © 2025 by SeBoOne** is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+**VerseCombatLog © 2025 by SeBoOne** is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
 
 You are free to:
 - ✅ **Share** — copy and redistribute in any medium or format
