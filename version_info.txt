@@ -1,0 +1,43 @@
+# UTF-8
+#
+# Version Info für VerseCombatLog.exe
+# Wird von PyInstaller verwendet, um EXE-Metadaten zu setzen
+#
+
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    # filevers und prodvers sollten immer eine 4-Tupel sein
+    filevers=(4, 1, 0, 0),
+    prodvers=(4, 1, 0, 0),
+    # Enthält eine Bitmaske, die verschiedene Flags spezifiziert
+    mask=0x3f,
+    # Enthält eine Bitmaske, die den Build-Status angibt
+    flags=0x0,
+    # Betriebssystem für das diese Datei entwickelt wurde
+    # 0x40004 = VOS_NT_WINDOWS32
+    OS=0x40004,
+    # Dateityp: 0x1 = VFT_APP (Anwendung)
+    fileType=0x1,
+    # Subtyp der Datei: 0x0 = nicht verwendet für VFT_APP
+    subtype=0x0,
+    # Datumsstempel der Datei: (0, 0) = nicht verwendet
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        u'040904B0',
+        [StringStruct(u'CompanyName', u'SeBoOne'),
+        StringStruct(u'FileDescription', u'Verse Combat Log - Star Citizen Combat Statistics Tracker'),
+        StringStruct(u'FileVersion', u'4.1.0.0'),
+        StringStruct(u'InternalName', u'VerseCombatLog'),
+        StringStruct(u'LegalCopyright', u'© 2025 SeBoOne. Unofficial Star Citizen Fan Tool. Not affiliated with Cloud Imperium Games.'),
+        StringStruct(u'OriginalFilename', u'VerseCombatLog.exe'),
+        StringStruct(u'ProductName', u'Verse Combat Log'),
+        StringStruct(u'ProductVersion', u'4.1.0.0'),
+        StringStruct(u'Comments', u'Tracks combat statistics from Star Citizen game logs. Open Source tool for the community.')])
+      ]),
+    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
+  ]
+)

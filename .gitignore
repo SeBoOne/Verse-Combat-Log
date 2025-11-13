@@ -1,0 +1,92 @@
+# Verse Combat Log - Git Ignore File
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# PyInstaller
+*.spec.bak
+build/
+dist/
+
+# Application Data Files
+# (Diese Dateien werden beim Benutzen erstellt)
+*.json
+!weapons_db.json
+!vehicles_db.json
+stats_*.json
+players_db_*.json
+config.json
+
+# Log Files
+*.log
+Game.log
+
+# User Files
+VCL-Files/internalNames.ini
+VCL-Files/internalNames_backup.ini
+
+# Temporary Files
+*.tmp
+*.temp
+~*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Build Outputs
+*.exe
+!VerseCombatLog.exe
+*.msi
+*.msm
+*.msp
+
+# Release Files (lokal)
+dist/README.md
+dist/VerseCombatLog_SHA256.txt
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# Documentation
+docs/_build/

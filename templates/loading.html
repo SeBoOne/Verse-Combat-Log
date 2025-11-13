@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verse Combat Log - Wird geladen...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-message {
+            font-size: 16px;
+            color: #a0a0c0;
+            margin-bottom: 32px;
+            min-height: 24px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 24px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .version-info {
+            font-size: 12px;
+            color: #606080;
+            margin-top: 24px;
+        }
+
+        .restart-notice {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            color: #a0a0c0;
+            font-size: 14px;
+        }
+
+        .restart-notice strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo">VCL</div>
+        <h1>Verse Combat Log</h1>
+
+        <div class="spinner"></div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="status-message" id="statusMessage">
+            Initialisiere...
+        </div>
+
+        <div id="restartNotice" class="restart-notice" style="display: none;">
+            <strong>🔄 Update wird angewendet</strong>
+            Die Anwendung wird in Kürze neu gestartet...
+        </div>
+
+        <div class="version-info">
+            Version 4.1 • Star Citizen Combat Log Tracker
+        </div>
+    </div>
+
+    <script>
+        // Empfange Status-Updates vom Backend
+        const statusEl = document.getElementById('statusMessage');
+        const restartNoticeEl = document.getElementById('restartNotice');
+
+        // Simuliere Status-Updates (wird durch echte SocketIO-Events ersetzt)
+        const statusMessages = [
+            'Prüfe auf Updates...',
+            'Lade Konfiguration...',
+            'Starte Monitoring-System...'
+        ];
+
+        let currentStatus = 0;
+        const updateStatus = () => {
+            if (currentStatus < statusMessages.length) {
+                statusEl.textContent = statusMessages[currentStatus];
+                currentStatus++;
+                setTimeout(updateStatus, 1000);
+            }
+        };
+
+        // Check for status parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const message = urlParams.get('message');
+
+        if (status && message) {
+            statusEl.textContent = decodeURIComponent(message);
+
+            if (status === 'updating') {
+                restartNoticeEl.style.display = 'block';
+
+                // Auto-reload nach 3 Sekunden
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000);
+            }
+        } else {
+            updateStatus();
+        }
+    </script>
+</body>
+</html>

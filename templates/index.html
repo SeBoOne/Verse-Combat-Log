@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verse Combat Log v1.0</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='media/vcl-logo-v.svg') }}" alt="Verse Combat Log">
+            </div>
+            <div id="versionStatus">
+                <div class="status">
+                    <span id="statusText" data-i18n="status.booting">Booting...</span>
+                    <span id="statusIndicator" class="status-indicator">⚪</span>
+                </div>
+                <div class="version-selector">
+                    <select id="versionSelect">
+                        <option value="LIVE">LIVE</option>
+                        <option value="PTU">PTU</option>
+                        <option value="EPTU">EPTU</option>
+                        <option value="TECH-PREVIEW">TECH-PREVIEW</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Left Column: Player Info + Sidebar -->
+            <div class="left-column">
+                <!-- Player Info Bar -->
+                <div class="player-info">
+                    <div class="player-details">
+                        <img src="{{ url_for('static', filename='media/avatar_default_big.jpg') }}" alt="Avatar" id="playerInfoAvatar" class="player-info-avatar">
+                        <div class="player-main-container">
+                                <span id="playerName" data-i18n="player_info.unknown">Unbekannt</span>
+                            <div class="player-main">
+                                <span id="playerId" class="player-id"></span>
+                                <span id="gameVersion" class="game-version"></span>
+                            </div>
+                            <span id="currentVehicle" class="current-vehicle"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar: Events Timeline (nur bei Session Tab) -->
+                <aside class="sidebar" id="timelineSidebar">
+                <div class="section-header">
+                    <h2 data-i18n="timeline.title">Timeline</h2>
+                    <button id="clearEvents" class="btn-small" data-i18n="buttons.clear">Clear</button>
+                </div>
+                <div id="eventsContainer" class="events-container"></div>
+                </aside>
+            </div>
+
+            <!-- Center: Stats -->
+            <main class="stats-area">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="session" data-i18n="tabs.session">Session</button>
+                    <button class="tab" data-tab="total" data-i18n="tabs.total">Gesamt</button>
+                    <button class="tab" data-i18n="tabs.players" data-tab="players">Spieler</button>
+                </div>
+
+                <!-- Session Stats -->
+                <div id="sessionStats" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.kd_stats">K/D Statistik</h3>
+                            <div id="sessionKD" class="kd-display">
+                                <div class="stat-row">
+                                    <span data-i18n="stats.kills">Kills:</span>
+                                    <span id="sessionKills">0 (0 PvP)</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span data-i18n="stats.deaths">Deaths:</span>
+                                    <span id="sessionDeaths">0</span>
+                                </div>
+                                <div class="stat-row highlight">
+                                    <span data-i18n="stats.kd_ratio">K/D:</span>
+                                    <span id="sessionKDRatio">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.weapons">Waffen</h3>
+                            <div id="sessionWeapons" class="weapon-list"></div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.vehicles">Fahrzeuge</h3>
+                            <div id="sessionVehicles" class="weapon-list"></div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.pvp-title">PvP Opfer</h3>
+                            <div id="sessionVictims" class="victim-list"></div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.deaths-title">Tode</h3>
+                            <div id="sessionDeathInfo" class="death-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Stats -->
+                <div id="totalStats" class="tab-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.kd_stats">K/D Statistik</h3>
+                            <div id="totalKD" class="kd-display">
+                                <div class="stat-row">
+                                    <span data-i18n="stats.kills">Kills:</span>
+                                    <span id="totalKills">0 (0 PvP)</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span data-i18n="stats.deaths">Deaths:</span>
+                                    <span id="totalDeaths">0</span>
+                                </div>
+                                <div class="stat-row highlight">
+                                    <span data-i18n="stats.kd_ratio">K/D:</span>
+                                    <span id="totalKDRatio">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.weapons">Waffen</h3>
+                            <div id="totalWeapons" class="weapon-list"></div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 data-i18n="stats.vehicles">Fahrzeuge</h3>
+                            <div id="totalVehicles" class="weapon-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Players Tab -->
+                <div id="playersStats" class="tab-content">
+                    <div class="player-stats-container">
+                        <div class="section-header">
+                            <h2 data-i18n="players_tab.player_encounters">Alle Spieler-Begegnungen</h2>
+                            <input type="text" id="playerSearch" data-i18n="players_tab.search" placeholder="Spieler suchen..." class="search-input">
+                        </div>
+                        
+                        <div class="players-grid" id="playersGrid">
+                            <!-- Dynamisch gefüllt -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button id="resetSession" class="btn" data-i18n="buttons.reset_session">Session zurücksetzen</button>
+                    <button id="openSettings" class="btn" data-i18n="buttons.settings">Einstellungen</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <h2 data-i18n="settings.title">Einstellungen</h2>
+
+            <!-- Settings Tabs -->
+            <div class="settings-tabs">
+                <button class="settings-tab active" data-i18n="settings.tabs.general" data-settings-tab="general">Allgemein</button>
+                <button class="settings-tab" data-i18n="settings.tabs.weapons" data-settings-tab="weapons">Waffen</button>
+                <button class="settings-tab" data-i18n="settings.tabs.vehicles" data-settings-tab="vehicles">Fahrzeuge</button>
+                <button class="settings-tab" data-i18n="settings.tabs.npcs" data-settings-tab="npcs">NPCs</button>
+                <button class="settings-tab" data-i18n="settings.tabs.info" data-settings-tab="info">Info</button>
+            </div>
+
+            <!-- General Settings Tab -->
+            <div id="generalSettings" class="settings-tab-content active">
+                <div class="settings-form">
+                    <label data-i18n="settings.general.version">Version:</label>
+                    <select id="settingsVersion">
+                        <option value="LIVE">LIVE</option>
+                        <option value="PTU">PTU</option>
+                        <option value="EPTU">EPTU</option>
+                        <option value="TECH-PREVIEW">TECH-PREVIEW</option>
+                    </select>
+
+                    <label data-i18n="settings.general.language">Sprache / Language:</label>
+                    <select id="settingsLanguage">
+                        <option value="de">Deutsch</option>
+                        <option value="en">English</option>
+                    </select>
+
+                    <label data-i18n="settings.general.log_path">Log-Pfad:</label>
+                    <input type="text" id="logPath" placeholder="C:\...\Game.log">
+
+                    <button id="saveSettings" class="btn" data-i18n="buttons.save">Speichern</button>
+                </div>
+            </div>
+
+            <!-- Weapons Settings Tab -->
+            <div id="weaponsSettings" class="settings-tab-content">
+                <div class="settings-header">
+                    <input type="text" id="weaponSearch" data-i18n="settings.weapons.search" placeholder="Waffe suchen..." class="search-input">
+                    <button id="addWeaponBtn" class="btn" data-i18n="settings.weapons.add_custom">+ Custom-Namen hinzufügen</button>
+                </div>
+                <div id="weaponsList" class="table-container"></div>
+            </div>
+
+            <!-- Vehicles Settings Tab -->
+            <div id="vehiclesSettings" class="settings-tab-content">
+                <div class="settings-header">
+                    <input type="text" id="vehicleSearch" data-i18n="settings.vehicles.search" placeholder="Fahrzeug suchen..." class="search-input">
+                    <button id="addVehicleBtn" class="btn" data-i18n="settings.vehicles.add_custom">+ Custom-Namen hinzufügen</button>
+                </div>
+                <div id="vehiclesList" class="table-container"></div>
+            </div>
+
+            <!-- NPCs Settings Tab -->
+            <div id="npcsSettings" class="settings-tab-content">
+                <div class="npc-form">
+                    <input type="text" id="npcPattern" data-i18n="settings.npcs.new_pattern" placeholder="Neues Pattern">
+                    <button id="addNPCPattern" class="btn" data-i18n="settings.npcs.add">Hinzufügen</button>
+                </div>
+                <div id="npcsList" class="list-container"></div>
+            </div>
+
+            <!-- Info Settings Tab -->
+            <div id="infoSettings" class="settings-tab-content">
+                <div class="info-content">
+                    <!-- Creator Info -->
+                    <div class="info-section">
+                        <img src="{{ url_for('static', filename='media/SeBo-logo.png') }}" alt="SeBoOne Logo" class="info-logo creator-logo">
+                        <h3>Created by SeBoOne</h3>
+                        <div class="creator-text">
+                            <a href="https://github.com/SeBoOne/Verse-Combat-Log">VerseCombatLog</a> © 2025 by <a href="https://github.com/SeBoOne">SeBoOne</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+                        </div>
+                    </div>
+
+                    <!-- Star Citizen Disclaimer -->
+                    <div class="info-section disclaimer">
+                        <img src="{{ url_for('static', filename='media/MadeByTheCommunity_Black.png') }}" alt="Made by the Community" class="info-logo community-logo">
+                        <div class="disclaimer-text">
+                            <p>This is an unofficial Star Citizen fantool/project, not affiliated with the Cloud Imperium group of companies.</p>
+                            <p>All content on this site not authored by its host or users are property of their respective owners.</p>
+                            <p>
+                                <a href="https://robertsspaceindustries.com" target="_blank" rel="noopener noreferrer">
+                                    Star Citizen®, Roberts Space Industries® and Cloud Imperium®
+                                </a>
+                                are registered trademarks of Cloud Imperium Rights LLC.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Profile Modal -->
+    <div id="playerProfileModal" class="modal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <div id="playerProfileContent">
+                <!-- Dynamisch gefüllt -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay (für INI Updates) -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-box">
+            <div class="loading-spinner"></div>
+            <h2 data-i18n="loading.title">Anzeigenamen werden aktualisiert...</h2>
+            <p id="loadingMessage" data-i18n="loading.checking_updates">Prüfe auf Updates...</p>
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
