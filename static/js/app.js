@@ -1,4 +1,4 @@
-// Verse Combat Log v1.0 - Frontend JavaScript
+// Verse Combat Log v1.1 - Frontend JavaScript
 
 let socket;
 let currentVersion = 'LIVE';

@@ -1,5 +1,5 @@
 """
-Verse Combat Log v1.0
+Verse Combat Log v1.1
 Main Flask Application
 """
 
@@ -594,9 +594,21 @@ def add_npc_pattern():
     if pattern:
         npc_db.add_pattern(pattern)
 
-        # Berechne Stats für alle Versionen neu
+        # Berechne Stats für alle Versionen neu UND bereinige Player-Datenbank
         for version in config_manager.get_versions():
             stats_managers[version].recalculate_npc_stats(npc_db)
+
+            # Bereinige Player-Datenbank von NPCs
+            if version in log_parsers:
+                player_db = log_parsers[version].player_db
+                removed_count = player_db.remove_npcs(npc_db)
+                if removed_count > 0:
+                    print(f"[{version}] {removed_count} NPCs aus Spielerdatenbank entfernt")
+                    # Sende Player-Update an Frontend
+                    socketio.emit('players_updated', {
+                        'version': version,
+                        'message': f'{removed_count} NPCs entfernt'
+                    })
 
             # Sende Update an Frontend
             socketio.emit('stats_updated', {
@@ -1089,7 +1101,7 @@ def start_server():
 
 if __name__ == '__main__':
     print("=" * 50)
-    print("Verse Combat Log v1.0")
+    print("Verse Combat Log v1.1")
     if DEBUG_MODE:
         print("DEBUG-MODUS AKTIVIERT")
         print("Entwicklertools: Rechtsklick → Inspect / F12")
@@ -1140,7 +1152,7 @@ if __name__ == '__main__':
     # Erstelle Desktop-Fenster
     print("Öffne Desktop-Fenster...")
     window = webview.create_window(
-        'Verse Combat Log v1.0',
+        'Verse Combat Log v1.1',
         'http://127.0.0.1:5000',
         width=1400,
         height=900,

@@ -1,4 +1,4 @@
-# Verse Combat Log v1.0
+# Verse Combat Log v1.1
 
 **Unofficial Star Citizen Combat Statistics Tracker**
 

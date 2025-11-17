@@ -5,7 +5,7 @@ REM ========================================
 
 echo.
 echo ========================================
-echo  Verse Combat Log v1.0 - Build Script
+echo  Verse Combat Log v1.1 - Build Script
 echo ========================================
 echo.
 

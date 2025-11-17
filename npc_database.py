@@ -53,7 +53,11 @@ class NPCDatabase:
                 "-Human-Civilian-",
                 "MissionEntityStreamable_",
                 "AIModule_",
-                "_Unmanned_PU_PDC_"
+                "_Unmanned_PU_PDC_",
+                "-StormBreaker-",
+                "PU_Human-",
+                "-Populace-Engineer-",
+                "NPC_Archetypes_"
             ]
             self.save()
     

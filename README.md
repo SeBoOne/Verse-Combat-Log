@@ -1,4 +1,4 @@
-# ⭐ Verse Combat Log v1.0
+# ⭐ Verse Combat Log v1.1
 
 <div align="center">
 
