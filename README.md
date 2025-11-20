@@ -1,4 +1,4 @@
-# ⭐ Verse Combat Log v1.1
+# ⭐ Verse Combat Log v1.1 - **BROKEN ATM for 4.4**
 
 <div align="center">
 
